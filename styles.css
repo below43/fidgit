@@ -1,0 +1,390 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+}
+
+body {
+    /* Greyscale textured wallpaper background */
+    background-color: #2a2a2a;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.03) 2px,
+            rgba(255, 255, 255, 0.03) 4px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.03) 2px,
+            rgba(255, 255, 255, 0.03) 4px
+        ),
+        radial-gradient(
+            ellipse at center,
+            #3a3a3a 0%,
+            #2a2a2a 50%,
+            #1a1a1a 100%
+        );
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Main container - 6 zone grid */
+#fidgit-container {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    padding-top: max(4px, env(safe-area-inset-top));
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+    padding-left: max(4px, env(safe-area-inset-left));
+    padding-right: max(4px, env(safe-area-inset-right));
+}
+
+/* Individual fidget zones */
+.fidgit-zone {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+}
+
+.fidgit-zone:active {
+    transform: scale(0.98);
+}
+
+/* Zone textures - greyscale patterns */
+.zone-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+/* Spinner zone - concentric circles texture */
+.spinner-texture {
+    background: 
+        radial-gradient(circle at center, transparent 30%, rgba(60, 60, 60, 0.5) 31%, transparent 32%),
+        radial-gradient(circle at center, transparent 50%, rgba(60, 60, 60, 0.5) 51%, transparent 52%),
+        radial-gradient(circle at center, transparent 70%, rgba(60, 60, 60, 0.5) 71%, transparent 72%),
+        linear-gradient(135deg, #3d3d3d 0%, #2d2d2d 50%, #252525 100%);
+}
+
+/* Slider zone - horizontal lines texture */
+.slider-texture {
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            #333 0px,
+            #333 3px,
+            #3a3a3a 3px,
+            #3a3a3a 6px
+        ),
+        linear-gradient(to right, #2d2d2d, #3d3d3d, #2d2d2d);
+    background-blend-mode: multiply;
+}
+
+/* Click zone - dotted/stippled texture */
+.click-texture {
+    background: 
+        radial-gradient(circle at 25% 25%, #444 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, #444 1px, transparent 1px),
+        linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+    background-size: 8px 8px, 8px 8px, 100% 100%;
+}
+
+/* Dial zone - radial lines texture */
+.dial-texture {
+    background: 
+        conic-gradient(
+            from 0deg,
+            #333 0deg,
+            #3d3d3d 15deg,
+            #333 30deg,
+            #3d3d3d 45deg,
+            #333 60deg,
+            #3d3d3d 75deg,
+            #333 90deg,
+            #3d3d3d 105deg,
+            #333 120deg,
+            #3d3d3d 135deg,
+            #333 150deg,
+            #3d3d3d 165deg,
+            #333 180deg,
+            #3d3d3d 195deg,
+            #333 210deg,
+            #3d3d3d 225deg,
+            #333 240deg,
+            #3d3d3d 255deg,
+            #333 270deg,
+            #3d3d3d 285deg,
+            #333 300deg,
+            #3d3d3d 315deg,
+            #333 330deg,
+            #3d3d3d 345deg,
+            #333 360deg
+        ),
+        radial-gradient(circle, #3a3a3a 60%, #2a2a2a 100%);
+    background-blend-mode: overlay;
+}
+
+/* Toggle zone - brushed metal texture */
+.toggle-texture {
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            rgba(255, 255, 255, 0.02) 1px,
+            transparent 2px
+        ),
+        linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 50%, #353535 100%);
+}
+
+/* Roll zone - leather/bumpy texture */
+.roll-texture {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 80% 20%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 40% 70%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 70% 60%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 50% 50%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 15% 80%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        radial-gradient(circle at 85% 85%, rgba(60, 60, 60, 0.8) 2px, transparent 3px),
+        linear-gradient(135deg, #353535 0%, #2d2d2d 100%);
+    background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 100% 100%;
+}
+
+/* Interactive elements */
+
+/* Spinner */
+.spinner-element {
+    width: 60%;
+    height: 60%;
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #555 0%, #3a3a3a 50%, #2a2a2a 100%);
+    box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+    transition: transform 0.05s linear;
+}
+
+.spinner-element::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    height: 20%;
+    background: #2a2a2a;
+    border-radius: 50%;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.spinner-element::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #4a4a4a;
+    border-radius: 50%;
+}
+
+/* Slider */
+.slider-track {
+    width: 80%;
+    height: 20px;
+    background: #222;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.slider-knob {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    top: 50%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+    border-radius: 50%;
+    box-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.4),
+        -1px -1px 2px rgba(255, 255, 255, 0.1);
+    cursor: grab;
+}
+
+.slider-knob::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 3px;
+    background: #2a2a2a;
+    border-radius: 2px;
+}
+
+/* Click surface */
+.click-surface {
+    width: 50%;
+    height: 50%;
+    max-width: 100px;
+    max-height: 100px;
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    border-radius: 12px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 0.4),
+        -2px -2px 4px rgba(255, 255, 255, 0.05);
+    transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.click-surface.pressed {
+    transform: scale(0.95);
+    box-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.4),
+        -1px -1px 2px rgba(255, 255, 255, 0.05),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Dial */
+.dial-element {
+    width: 60%;
+    height: 60%;
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #3d3d3d, #2d2d2d);
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 0.4),
+        -2px -2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.05s linear;
+}
+
+.dial-notch {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 15%;
+    background: #555;
+    border-radius: 2px;
+}
+
+/* Toggle switch */
+.toggle-switch {
+    width: 70%;
+    height: 40px;
+    max-width: 120px;
+    background: #222;
+    border-radius: 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.toggle-lever {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 4px;
+    left: 4px;
+    background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+    border-radius: 50%;
+    box-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.4),
+        -1px -1px 2px rgba(255, 255, 255, 0.1);
+    transition: left 0.2s ease;
+}
+
+.toggle-switch.on .toggle-lever {
+    left: calc(100% - 36px);
+}
+
+/* Roll ball */
+.roll-ball {
+    width: 50%;
+    height: 0;
+    padding-bottom: 50%;
+    max-width: 100px;
+    background: 
+        radial-gradient(circle at 30% 30%, #555 0%, #3a3a3a 50%, #252525 100%);
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        4px 4px 12px rgba(0, 0, 0, 0.5),
+        -2px -2px 4px rgba(255, 255, 255, 0.05),
+        inset -2px -2px 8px rgba(0, 0, 0, 0.3),
+        inset 2px 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Visual feedback states */
+.fidgit-zone.active {
+    box-shadow: inset 0 0 30px rgba(100, 100, 100, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    #fidgit-container {
+        gap: 3px;
+        padding: 3px;
+    }
+    
+    .fidgit-zone {
+        border-radius: 12px;
+    }
+}
+
+@media (orientation: landscape) {
+    #fidgit-container {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+}

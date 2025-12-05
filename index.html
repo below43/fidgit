@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#2a2a2a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fidgit">
+    <meta name="description" content="A tactile fidget cube PWA with haptic feedback">
+    <title>Fidgit</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="fidgit-container">
+        <!-- Top row -->
+        <div class="fidgit-zone" data-zone="spinner" data-feedback="spin">
+            <div class="zone-texture spinner-texture"></div>
+            <div class="spinner-element"></div>
+        </div>
+        <div class="fidgit-zone" data-zone="slider" data-feedback="slide">
+            <div class="zone-texture slider-texture"></div>
+            <div class="slider-track">
+                <div class="slider-knob"></div>
+            </div>
+        </div>
+
+        <!-- Middle row -->
+        <div class="fidgit-zone" data-zone="click" data-feedback="click">
+            <div class="zone-texture click-texture"></div>
+            <div class="click-surface"></div>
+        </div>
+        <div class="fidgit-zone" data-zone="dial" data-feedback="dial">
+            <div class="zone-texture dial-texture"></div>
+            <div class="dial-element">
+                <div class="dial-notch"></div>
+            </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="fidgit-zone" data-zone="toggle" data-feedback="toggle">
+            <div class="zone-texture toggle-texture"></div>
+            <div class="toggle-switch">
+                <div class="toggle-lever"></div>
+            </div>
+        </div>
+        <div class="fidgit-zone" data-zone="roll" data-feedback="roll">
+            <div class="zone-texture roll-texture"></div>
+            <div class="roll-ball"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

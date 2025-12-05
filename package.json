@@ -1,0 +1,13 @@
+{
+  "name": "fidgit",
+  "version": "1.0.0",
+  "description": "A tactile fidget cube PWA with haptic feedback",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["pwa", "fidget", "tactile", "haptic"],
+  "author": "Andrew Drake",
+  "license": "MIT",
+  "devDependencies": {}
+}
