@@ -49,9 +49,16 @@ class FidgitApp {
         // Prevent default touch behaviors
         document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
         
-        // Request fullscreen on first interaction
-        document.addEventListener('click', () => this.requestFullscreen(), { once: true });
-        document.addEventListener('touchstart', () => this.requestFullscreen(), { once: true });
+        // Request fullscreen on double-tap (less disruptive than single tap)
+        let lastTap = 0;
+        const handleDoubleTap = () => {
+            const now = Date.now();
+            if (now - lastTap < 300) {
+                this.requestFullscreen();
+            }
+            lastTap = now;
+        };
+        document.addEventListener('touchend', handleDoubleTap);
 
         // Register service worker
         this.registerServiceWorker();
@@ -66,8 +73,9 @@ class FidgitApp {
         
         try {
             navigator.vibrate(pattern);
-        } catch {
-            // Vibration not available
+        } catch (error) {
+            // Vibration API may not be available in some contexts (e.g., insecure origins)
+            console.debug('Vibration not available:', error.message);
         }
     }
 

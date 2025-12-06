@@ -66,8 +66,8 @@ self.addEventListener('fetch', (event) => {
 
                 return fetch(event.request)
                     .then((networkResponse) => {
-                        // Don't cache non-successful responses
-                        if (!networkResponse || networkResponse.status !== 200) {
+                        // Don't cache non-successful responses or opaque responses
+                        if (!networkResponse || !networkResponse.ok || networkResponse.type === 'opaque') {
                             return networkResponse;
                         }
 
