@@ -472,10 +472,98 @@ class FidgitApp {
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
+                .then((registration) => {
+                    // Check for updates periodically (every 60 seconds)
+                    setInterval(() => {
+                        registration.update();
+                    }, 60000);
+
+                    // Handle service worker updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        if (!newWorker) return;
+
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New service worker is installed and ready
+                                // Show update notification to user
+                                this.showUpdateNotification();
+                            }
+                        });
+                    });
+                })
                 .catch(() => {
                     // Service worker registration failed
                 });
+
+            // Listen for controller change (when new SW takes control)
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                // Reload the page to get the latest content
+                window.location.reload();
+            });
         }
+    }
+
+    // Show update notification to user
+    showUpdateNotification() {
+        // Create a subtle notification banner
+        const banner = document.createElement('div');
+        banner.id = 'update-banner';
+        banner.innerHTML = `
+            <div style="
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4a4a4a;
+                color: #fff;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-size: 14px;
+                max-width: 90%;
+            ">
+                <span>New version available!</span>
+                <button id="update-btn" style="
+                    background: #5cb85c;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    font-size: 14px;
+                ">Update</button>
+                <button id="dismiss-btn" style="
+                    background: transparent;
+                    color: #ccc;
+                    border: none;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">Later</button>
+            </div>
+        `;
+        
+        document.body.appendChild(banner);
+
+        // Handle update button click
+        document.getElementById('update-btn').addEventListener('click', () => {
+            // Tell the waiting service worker to skip waiting and become active
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+            }
+        });
+
+        // Handle dismiss button click
+        document.getElementById('dismiss-btn').addEventListener('click', () => {
+            banner.remove();
+        });
     }
 }
 
