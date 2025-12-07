@@ -37,8 +37,13 @@ class FidgitApp {
     async checkCapacitorAvailability() {
         try {
             // Try to check if Haptics is available
-            this.capacitorAvailable = true;
-            console.log('Capacitor Haptics available');
+            // Capacitor is available if we can import and access the Haptics module
+            this.capacitorAvailable = typeof Haptics !== 'undefined' && typeof Haptics.impact === 'function';
+            if (this.capacitorAvailable) {
+                console.log('Capacitor Haptics available');
+            } else {
+                console.log('Capacitor not available, falling back to Vibration API');
+            }
         } catch (error) {
             this.capacitorAvailable = false;
             console.log('Capacitor not available, falling back to Vibration API');
@@ -98,21 +103,19 @@ class FidgitApp {
         if (this.capacitorAvailable) {
             try {
                 // Map patterns to Capacitor Haptics styles
-                if (pattern === this.hapticPatterns.tap) {
-                    await Haptics.impact({ style: ImpactStyle.Light });
-                } else if (pattern === this.hapticPatterns.click || pattern === this.hapticPatterns.toggle) {
-                    await Haptics.impact({ style: ImpactStyle.Medium });
-                } else if (pattern === this.hapticPatterns.heavy) {
-                    await Haptics.impact({ style: ImpactStyle.Heavy });
-                } else if (pattern === this.hapticPatterns.tick || pattern === this.hapticPatterns.spinTick) {
-                    // Very light feedback for ticks
-                    await Haptics.impact({ style: ImpactStyle.Light });
-                } else if (pattern === this.hapticPatterns.dialNotch || pattern === this.hapticPatterns.roll) {
-                    await Haptics.impact({ style: ImpactStyle.Light });
-                } else {
-                    // Default to medium impact
-                    await Haptics.impact({ style: ImpactStyle.Medium });
-                }
+                const patternToStyleMap = {
+                    [this.hapticPatterns.tap]: ImpactStyle.Light,
+                    [this.hapticPatterns.tick]: ImpactStyle.Light,
+                    [this.hapticPatterns.spinTick]: ImpactStyle.Light,
+                    [this.hapticPatterns.dialNotch]: ImpactStyle.Light,
+                    [this.hapticPatterns.roll]: ImpactStyle.Light,
+                    [this.hapticPatterns.click]: ImpactStyle.Medium,
+                    [this.hapticPatterns.toggle]: ImpactStyle.Medium,
+                    [this.hapticPatterns.heavy]: ImpactStyle.Heavy
+                };
+                
+                const style = patternToStyleMap[pattern] || ImpactStyle.Medium;
+                await Haptics.impact({ style });
                 return; // Success, no need to fall back
             } catch (error) {
                 console.debug('Capacitor Haptics failed:', error.message);
