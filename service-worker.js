@@ -3,7 +3,8 @@
  * Enables offline functionality for the PWA
  */
 
-const CACHE_NAME = 'fidgit-v1';
+const CACHE_VERSION = '1.0.0';
+const CACHE_NAME = `fidgit-v${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -26,9 +27,6 @@ self.addEventListener('install', (event) => {
         caches.open(CACHE_NAME)
             .then((cache) => {
                 return cache.addAll(ASSETS_TO_CACHE);
-            })
-            .then(() => {
-                return self.skipWaiting();
             })
     );
 });
@@ -90,4 +88,11 @@ self.addEventListener('fetch', (event) => {
                     });
             })
     );
+});
+
+// Listen for messages from the app
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
