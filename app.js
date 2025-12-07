@@ -3,9 +3,6 @@
  * Provides haptic feedback for different interactive zones
  */
 
-// Import styles
-import './styles.css';
-
 // Import Capacitor Haptics for better PWA support
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
