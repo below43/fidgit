@@ -11,6 +11,16 @@
     <title>Fidgit</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Import map for bare module specifiers (used in development, bundled by Vite in production) -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@capacitor/core": "https://cdn.jsdelivr.net/npm/@capacitor/core@7.4.4/dist/esm/index.js",
+        "@capacitor/haptics": "https://cdn.jsdelivr.net/npm/@capacitor/haptics@7.0.2/dist/esm/index.js"
+      }
+    }
+    </script>
 </head>
 <body>
     <div id="fidgit-container">
