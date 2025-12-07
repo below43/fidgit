@@ -5,3 +5,4 @@ node_modules/
 .env.local
 generate-icons.js
 package-lock.json
+dist/

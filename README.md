@@ -27,7 +27,13 @@ A Progressive Web App inspired by fidget cubes, providing tactile haptic feedbac
 ### Local Development
 ```bash
 npm install
-npm start
+npm start  # Starts Vite dev server on port 3000
+```
+
+### Building for Production
+```bash
+npm run build  # Builds to dist/ directory
+npm run preview  # Preview the built version
 ```
 
 ## Deployment
@@ -37,14 +43,22 @@ This app is configured for Cloudflare Pages deployment:
 
 1. Connect your GitHub repository to Cloudflare Pages
 2. Set build settings:
-   - Build command: (none - static files)
-   - Output directory: `/`
+   - Build command: `npm run build`
+   - Output directory: `dist`
 3. Deploy!
 
 Or use Wrangler CLI:
 ```bash
-npx wrangler pages deploy . --project-name=fidgit
+npm run build
+npx wrangler pages deploy dist --project-name=fidgit
 ```
+
+## Haptic Feedback
+
+This app uses **Capacitor Haptics** for improved haptic feedback support across platforms:
+- Native-like haptic feedback on iOS and Android (when installed as PWA)
+- Falls back to Vibration API on web browsers
+- Different haptic patterns for different interactions (light, medium, heavy impacts)
 
 ## Browser Support
 

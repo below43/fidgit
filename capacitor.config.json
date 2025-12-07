@@ -1,0 +1,6 @@
+{
+  "appId": "com.fidgit.app",
+  "appName": "Fidgit",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
