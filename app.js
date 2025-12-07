@@ -8,6 +8,7 @@ class FidgitApp {
         this.zones = {};
         this.activeZone = null;
         this.hapticSupported = 'vibrate' in navigator;
+        this.userActivated = false; // Track if we have user activation
         
         // State for each zone
         this.state = {
@@ -70,13 +71,23 @@ class FidgitApp {
     // Haptic feedback patterns
     vibrate(pattern) {
         if (!this.hapticSupported) return;
+        if (!this.userActivated) return; // Require user activation for vibration
         
         try {
-            navigator.vibrate(pattern);
+            const result = navigator.vibrate(pattern);
+            if (!result) {
+                // Vibration was rejected (might not have user activation)
+                console.debug('Vibration rejected - may require user gesture');
+            }
         } catch (error) {
             // Vibration API may not be available in some contexts (e.g., insecure origins)
             console.debug('Vibration not available:', error.message);
         }
+    }
+
+    // Mark that we have user activation
+    markUserActivation() {
+        this.userActivated = true;
     }
 
     // Different haptic patterns for different interactions
@@ -116,6 +127,7 @@ class FidgitApp {
 
         const handleStart = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             const touch = e.touches ? e.touches[0] : e;
             const rect = spinner.getBoundingClientRect();
             lastTouch = getAngle(touch, rect);
@@ -195,6 +207,7 @@ class FidgitApp {
 
         const handleStart = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             isDragging = true;
             zone.classList.add('active');
             this.vibrate(this.hapticPatterns.tap);
@@ -246,6 +259,7 @@ class FidgitApp {
 
         const handleDown = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             surface.classList.add('pressed');
             this.state.click.pressed = true;
             this.vibrate(this.hapticPatterns.click);
@@ -282,6 +296,7 @@ class FidgitApp {
 
         const handleStart = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             const touch = e.touches ? e.touches[0] : e;
             const rect = dial.getBoundingClientRect();
             lastAngle = getAngle(touch, rect);
@@ -338,6 +353,7 @@ class FidgitApp {
 
         const handleToggle = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             this.state.toggle.on = !this.state.toggle.on;
             toggle.classList.toggle('on', this.state.toggle.on);
             this.vibrate(this.hapticPatterns.toggle);
@@ -359,6 +375,7 @@ class FidgitApp {
 
         const handleStart = (e) => {
             e.preventDefault();
+            this.markUserActivation(); // Mark user activation
             const touch = e.touches ? e.touches[0] : e;
             lastX = touch.clientX;
             lastY = touch.clientY;
@@ -423,14 +440,8 @@ class FidgitApp {
                     spinner.style.transform = `rotate(${this.state.spinner.rotation}deg)`;
                 }
                 
-                // Tick feedback during momentum
-                const ticks = Math.floor(this.state.spinner.rotation / 30);
-                if (ticks !== this.state.spinner.lastTick) {
-                    this.state.spinner.lastTick = ticks;
-                    if (Math.abs(this.state.spinner.velocity) > 2) {
-                        this.vibrate(this.hapticPatterns.spinTick);
-                    }
-                }
+                // Note: Removed tick feedback during momentum as it requires user activation
+                // Only tick feedback during direct interaction will work in PWA context
             } else {
                 this.state.spinner.velocity = 0;
             }
