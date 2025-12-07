@@ -4,7 +4,7 @@
  */
 
 const CACHE_VERSION = '1.0.0';
-const CACHE_NAME = `fidgit-v${CACHE_VERSION}-${self.registration.scope}`;
+const CACHE_NAME = `fidgit-v${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',

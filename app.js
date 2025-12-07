@@ -471,10 +471,12 @@ class FidgitApp {
     // Register service worker for PWA
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
+            let updateCheckInterval;
+            
             navigator.serviceWorker.register('service-worker.js')
                 .then((registration) => {
                     // Check for updates periodically (every 60 seconds)
-                    setInterval(() => {
+                    updateCheckInterval = setInterval(() => {
                         registration.update();
                     }, 60000);
 
@@ -494,6 +496,10 @@ class FidgitApp {
                 })
                 .catch(() => {
                     // Service worker registration failed
+                    // Clear the interval if registration fails
+                    if (updateCheckInterval) {
+                        clearInterval(updateCheckInterval);
+                    }
                 });
 
             // Listen for controller change (when new SW takes control)
@@ -506,6 +512,11 @@ class FidgitApp {
 
     // Show update notification to user
     showUpdateNotification() {
+        // Check if banner already exists
+        if (document.getElementById('update-banner')) {
+            return; // Don't create duplicate banners
+        }
+        
         // Create a subtle notification banner
         const banner = document.createElement('div');
         banner.id = 'update-banner';
@@ -555,9 +566,11 @@ class FidgitApp {
         // Handle update button click
         document.getElementById('update-btn').addEventListener('click', () => {
             // Tell the waiting service worker to skip waiting and become active
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
-            }
+            navigator.serviceWorker.getRegistration().then(reg => {
+                if (reg && reg.waiting) {
+                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+            });
         });
 
         // Handle dismiss button click
