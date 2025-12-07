@@ -3,12 +3,22 @@
  * Provides haptic feedback for different interactive zones
  */
 
+// Import styles
+import './styles.css';
+
+// Import Capacitor Haptics for better PWA support
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
+
 class FidgitApp {
     constructor() {
         this.zones = {};
         this.activeZone = null;
         this.hapticSupported = 'vibrate' in navigator;
+        this.capacitorAvailable = false; // Track if Capacitor is available
         this.userActivated = false; // Track if we have user activation
+        
+        // Check if Capacitor is available
+        this.checkCapacitorAvailability();
         
         // State for each zone
         this.state = {
@@ -21,6 +31,23 @@ class FidgitApp {
         };
 
         this.init();
+    }
+
+    // Check if Capacitor is available
+    async checkCapacitorAvailability() {
+        try {
+            // Try to check if Haptics is available
+            // Capacitor is available if we can import and access the Haptics module
+            this.capacitorAvailable = typeof Haptics !== 'undefined' && typeof Haptics.impact === 'function';
+            if (this.capacitorAvailable) {
+                console.log('Capacitor Haptics available');
+            } else {
+                console.log('Capacitor not available, falling back to Vibration API');
+            }
+        } catch (error) {
+            this.capacitorAvailable = false;
+            console.log('Capacitor not available, falling back to Vibration API');
+        }
     }
 
     init() {
@@ -69,9 +96,35 @@ class FidgitApp {
     }
 
     // Haptic feedback patterns
-    vibrate(pattern) {
-        if (!this.hapticSupported) return;
+    async vibrate(pattern) {
         if (!this.userActivated) return; // Require user activation for vibration
+        
+        // Use Capacitor Haptics if available (better PWA support)
+        if (this.capacitorAvailable) {
+            try {
+                // Map patterns to Capacitor Haptics styles
+                const patternToStyleMap = {
+                    [this.hapticPatterns.tap]: ImpactStyle.Light,
+                    [this.hapticPatterns.tick]: ImpactStyle.Light,
+                    [this.hapticPatterns.spinTick]: ImpactStyle.Light,
+                    [this.hapticPatterns.dialNotch]: ImpactStyle.Light,
+                    [this.hapticPatterns.roll]: ImpactStyle.Light,
+                    [this.hapticPatterns.click]: ImpactStyle.Medium,
+                    [this.hapticPatterns.toggle]: ImpactStyle.Medium,
+                    [this.hapticPatterns.heavy]: ImpactStyle.Heavy
+                };
+                
+                const style = patternToStyleMap[pattern] || ImpactStyle.Medium;
+                await Haptics.impact({ style });
+                return; // Success, no need to fall back
+            } catch (error) {
+                console.debug('Capacitor Haptics failed:', error.message);
+                // Fall through to legacy vibration API
+            }
+        }
+        
+        // Fall back to legacy Vibration API
+        if (!this.hapticSupported) return;
         
         try {
             const result = navigator.vibrate(pattern);
