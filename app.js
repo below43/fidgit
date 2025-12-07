@@ -76,8 +76,9 @@ class FidgitApp {
         try {
             const result = navigator.vibrate(pattern);
             if (!result) {
-                // Vibration was rejected (might not have user activation)
-                console.debug('Vibration rejected - may require user gesture');
+                // Vibration was rejected - could be due to browser permissions,
+                // device limitations, or silent/DND mode
+                console.debug('Vibration rejected - check browser permissions and device settings');
             }
         } catch (error) {
             // Vibration API may not be available in some contexts (e.g., insecure origins)
@@ -85,7 +86,9 @@ class FidgitApp {
         }
     }
 
-    // Mark that we have user activation
+    // Mark that we have user activation for haptic feedback
+    // Call this method at the start of user interactions (touch/click events)
+    // to enable haptic feedback for subsequent vibration calls
     markUserActivation() {
         this.userActivated = true;
     }
